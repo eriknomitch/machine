@@ -77,7 +77,7 @@ class Machine:
     def setup(self):
         self.setup_packages()
         self.setup_users()
-        # CHECK: Reboot here?
+        os.system("reboot")
         return
 
 # ------------------------------------------------
