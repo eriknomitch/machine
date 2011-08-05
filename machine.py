@@ -6,6 +6,7 @@
 import os
 import sys
 import json
+import apt_pkg
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -53,6 +54,10 @@ def main():
         #print "fatal: You need to be root."
         #sys.exit(1)
         print "FIX: skipping root check"
+
+    apt_pkg.init_config()
+    apt_pkg 
+
     machine.setup()
     sys.exit(0)
 

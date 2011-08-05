@@ -1,1 +1,1 @@
-vim *.py *.json run vim-all
+vim *.py *.json bootstrap.sh run vim-all
