@@ -65,6 +65,16 @@ class File:
         return
 
 # ------------------------------------------------
+# CLASS->WEBSITE ---------------------------------
+# ------------------------------------------------
+class Website:
+    def __init__(self, domain):
+        self.domain = domain
+
+    def install(self, cache):
+        return
+
+# ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
 # ------------------------------------------------
 class Machine:
@@ -74,9 +84,30 @@ class Machine:
 
         self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
         self.gems     = map(lambda gem_name: Gem(gem_name), self.json_config["gems"])
+        self.files    = map(lambda json: File(json), self.json_config["files"])
+        self.websites = map(lambda json: Website(json), self.json_config["websites"])
 
         self.cache = apt.Cache()
 
+    # --------------------------------------------
+    # SETUP->UTILITY -----------------------------
+    # --------------------------------------------
+    def setup_standard(self, array):
+        for element in array:
+            element.install()
+
+    # --------------------------------------------
+    # SETUPS -------------------------------------
+    # --------------------------------------------
+    def setup_gems(self):
+        self.setup_standard(self.gems)
+
+    def setup_files(self):
+        self.setup_standard(self.files)
+
+    def setup_websites(self):
+        self.setup_standard(self.websites)
+    
     def setup_packages(self):
         print "updating:apt:cache"
         self.cache.update()
@@ -98,16 +129,9 @@ class Machine:
         for user in self.users:
             user.create()
 
-    def setup_gems(self):
-        for gem in self.gems:
-            gem.install()
-
-    def setup_files(self):
-        return
-
-    def setup_websites(self):
-        return
-    
+    # --------------------------------------------
+    # SETUP --------------------------------------
+    # --------------------------------------------
     def setup(self):
         self.setup_users()
         self.setup_packages()
