@@ -8,21 +8,36 @@ import sys
 import json
 
 # ------------------------------------------------
+# CLASS->PACKAGE ---------------------------------
+# ------------------------------------------------
+class Package:
+    def __init__(self, name):
+        self.name = name
+
+    def install(self):
+        print "installing: "+self.name
+        return
+
+# ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
 # ------------------------------------------------
 class Machine:
     def __init__(self, path_json_config):
         self.json_config = open(path_json_config)
         self.json_config = json.load(self.json_config)
-        print self.json_config["packages"]
+
+        self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
 
     def ensure_system_updated(self):
         return
 
-    def install_packages(self):
+    def setup_packages(self):
+        for package in self.packages:
+            package.install()
         return
     
-    def install_package(self, package):
+    def setup(self):
+        self.setup_packages()
         return
 
 # ------------------------------------------------
@@ -37,6 +52,9 @@ def main():
     if os.getenv("USER") != "root":
         #print "fatal: You need to be root."
         #sys.exit(1)
-        print "skipping root check"
+        print "FIX: skipping root check"
+    machine.setup()
     sys.exit(0)
+
+main()
 
