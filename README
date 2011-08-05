@@ -1,0 +1,1 @@
+cd && apt-get install --yes git-core && git clone https://github.com/eriknomitch/machine.git && cd machine && ./bootstrap.sh
