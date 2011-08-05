@@ -32,12 +32,12 @@ class Package:
         self.name = name
 
     def install(self, cache):
-        print "ensuring package: \""+self.name+"\""
+        print "installing:package:\""+self.name+"\""
         if self.name in cache.keys():
             self.package = cache[self.name]
             self.package.mark_install()
         else:
-            print "warning: package not found: \""+self.name+"\""
+            print "warning:package-not-found:\""+self.name+"\""
 
 # ------------------------------------------------
 # CLASS->GEM -------------------------------------
@@ -47,7 +47,9 @@ class Gem:
         self.name = name
 
     def install(self):
-        print "ensuring gem: \""+self.name+"\""
+        # FIX: Download latest from source and setup.rb
+        #ln_arguments = ["ln", "-s", "/usr/bin/gem1.8", "/usr/bin/gem"]
+        print "installing:gem: \""+self.name+"\""
         return
 
 # ------------------------------------------------
@@ -59,7 +61,7 @@ class File:
         self.name = json["name"]
 
     def install(self):
-        print "installing file: \""+self.name+"\""
+        print "installing:file: \""+self.name+"\""
         return
 
 # ------------------------------------------------
@@ -76,13 +78,13 @@ class Machine:
         self.cache = apt.Cache()
 
     def setup_packages(self):
-        print "updating: apt cache"
+        print "updating:apt:cache"
         self.cache.update()
 
         self.cache.open(None)
     
         # CHECK: Should we reboot here? What if we upgrade a kernel...
-        print "upgrading: apt packages"
+        print "upgrading:apt:packages"
         self.cache.upgrade(True)
 
         for package in self.packages:
@@ -95,12 +97,23 @@ class Machine:
 
         for user in self.users:
             user.create()
-            
+
+    def setup_gems(self):
+        for gem in self.gems:
+            gem.install()
+
+    def setup_files(self):
+        return
+
+    def setup_websites(self):
         return
     
     def setup(self):
-        self.setup_packages()
         self.setup_users()
+        self.setup_packages()
+        self.setup_files()
+        self.setup_gems()
+        self.setup_websites()
         #os.system("reboot")
 
 # ------------------------------------------------
