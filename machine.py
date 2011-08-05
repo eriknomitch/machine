@@ -47,8 +47,6 @@ class Gem:
         self.name = name
 
     def install(self):
-        # FIX: Download latest from source and setup.rb
-        #ln_arguments = ["ln", "-s", "/usr/bin/gem1.8", "/usr/bin/gem"]
         print "installing:gem: \""+self.name+"\""
         return
 
@@ -82,9 +80,9 @@ class Machine:
         self.json_config = open(path_json_config)
         self.json_config = json.load(self.json_config)
 
-        self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
-        self.gems     = map(lambda gem_name: Gem(gem_name), self.json_config["gems"])
-        self.files    = map(lambda json: File(json), self.json_config["files"])
+        self.packages = map(lambda name: Package(name), self.json_config["packages"])
+        self.gems     = map(lambda name: Gem(name),     self.json_config["gems"])
+        self.files    = map(lambda json: File(json),    self.json_config["files"])
         self.websites = map(lambda json: Website(json), self.json_config["websites"])
 
         self.cache = apt.Cache()
@@ -100,6 +98,8 @@ class Machine:
     # SETUPS -------------------------------------
     # --------------------------------------------
     def setup_gems(self):
+        # FIX: Download latest from source and setup.rb
+        #ln_arguments = ["ln", "-s", "/usr/bin/gem1.8", "/usr/bin/gem"]
         self.setup_standard(self.gems)
 
     def setup_files(self):
