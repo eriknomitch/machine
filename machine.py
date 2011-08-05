@@ -6,7 +6,7 @@
 import os
 import sys
 import json
-import apt_pkg
+import apt
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -15,8 +15,10 @@ class Package:
     def __init__(self, name):
         self.name = name
 
-    def install(self):
-        print "installing: "+self.name
+    def install(self, cache):
+        print "ensuring package: \""+self.name+"\""
+        self.package = cache[self.name]
+        self.package.mark_install()
         return
 
 # ------------------------------------------------
@@ -28,14 +30,19 @@ class Machine:
         self.json_config = json.load(self.json_config)
 
         self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
+        self.cache = apt.Cache()
 
     def ensure_system_updated(self):
         return
 
     def setup_packages(self):
+        print "updating: cache"
+        self.cache.update()
+
         for package in self.packages:
-            package.install()
-        return
+            package.install(self.cache)
+
+        self.cache.commit()
     
     def setup(self):
         self.setup_packages()
@@ -51,12 +58,8 @@ machine = Machine("machine.json")
 # ------------------------------------------------
 def main():
     if os.getenv("USER") != "root":
-        #print "fatal: You need to be root."
-        #sys.exit(1)
-        print "FIX: skipping root check"
-
-    apt_pkg.init_config()
-    apt_pkg 
+        print "fatal: You need to be root."
+        sys.exit(1)
 
     machine.setup()
     sys.exit(0)

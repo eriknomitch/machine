@@ -1,3 +1,5 @@
 #!/bin/sh
 
-echo "bootstrapping"
+# FIX: Check for root
+
+apt-get install python python-apt
