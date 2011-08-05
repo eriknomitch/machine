@@ -7,6 +7,22 @@ import os
 import sys
 import json
 import apt
+import subprocess
+import crypt
+
+# ------------------------------------------------
+# CLASS->USER ------------------------------------
+# ------------------------------------------------
+class User:
+    def __init__(self, json):
+        self.json     = json
+        self.name     = json["name"]
+        self.password = json["password"]
+
+    def create(self):
+        password_encrypted = crypt.crypt(self.password, self.name)
+        useradd_arguments = ["useradd", "--create-home", self.name]
+        #useradd_process   = subprocess.Popen(useradd_arguments)
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -42,16 +58,26 @@ class Machine:
         self.cache.open(None)
     
         # CHECK: This isn't tested...
+        # CHECK: Should we reboot here? What if we upgrade a kernel...
         print "upgrading: apt packages"
-        self.cache.upgrade()
+        self.cache.upgrade(True)
 
         for package in self.packages:
             package.install(self.cache)
 
         self.cache.commit()
+
+    def setup_users(self):
+        self.users = map(lambda user_json: User(user_json), self.json_config["users"])
+
+        for user in self.users:
+            user.create()
+            
+        return
     
     def setup(self):
         self.setup_packages()
+        self.setup_users()
         return
 
 # ------------------------------------------------
