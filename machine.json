@@ -1,1 +1,1 @@
-{"packages": ["zsh", "vim", "screen", "cowsay"], "users": ["linode", "somepassword"]}
+{"packages": ["zsh", "vim", "screen", "cowsay"], "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}]}
