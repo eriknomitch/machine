@@ -39,6 +39,12 @@ class Machine:
         print "updating: apt cache"
         self.cache.update()
 
+        self.cache.open(None)
+    
+        # CHECK: This isn't tested...
+        print "upgrading: apt packages"
+        self.cache.upgrade()
+
         for package in self.packages:
             package.install(self.cache)
 
