@@ -15,14 +15,14 @@ import crypt
 # ------------------------------------------------
 class User:
     def __init__(self, json):
-        self.json     = json
-        self.name     = json["name"]
-        self.password = json["password"]
+        self.json           = json
+        self.name           = json["name"]
+        self.password       = json["password"]
+        self.password_crypt = crypt.crypt(self.password, self.name)
 
     def create(self):
-        password_encrypted = crypt.crypt(self.password, self.name)
-        useradd_arguments = ["useradd", "--create-home", self.name]
-        #useradd_process   = subprocess.Popen(useradd_arguments)
+        useradd_arguments = ["useradd", "--create-home", self.name, "--password", self.password_crypt]
+        useradd_process = subprocess.Popen(useradd_arguments)
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
