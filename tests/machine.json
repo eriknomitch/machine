@@ -1,3 +1,4 @@
 {"packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby"], 
-    "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}]
+    "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
+ "websites": [{"domain": "foo.com"}]
 }
