@@ -1,6 +1,7 @@
 {
-      "packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby"], 
-         "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
- "configuration": [{"name": "zshrc"}],
-      "websites": [{"domain": "foo.com"}]
+   "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
+"packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby", "postgresql", "postgresql-client", "libpq-dev", "libopenssl-ruby1.8", "ruby1.8-dev"], 
+    "gems": ["postgres", "pg", "dispatcher", "jquery-rails"],
+   "files": [{"name": "zshrc", "path": "~/.zshrc", "url": "http://serve.eriknomitch.com/configuration/zshrc", "permissions": "0644", "owner": "linode", "group": "linode"}],
+"websites": [{"domain": "foo.com"}]
 }
