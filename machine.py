@@ -18,10 +18,10 @@ class User:
         self.json           = json
         self.name           = json["name"]
         self.password       = json["password"]
-        self.password_crypt = crypt.crypt(self.password, self.name)
+        self.password_crypt = crypt.crypt(self.password, self.name) # CHECK: Is this salt what it's supposed to be (self.name)?
 
     def create(self):
-        useradd_arguments = ["useradd", "--create-home", self.name, "--password", self.password_crypt]
+        useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
         useradd_process = subprocess.Popen(useradd_arguments)
 
 # ------------------------------------------------
@@ -57,7 +57,6 @@ class Machine:
 
         self.cache.open(None)
     
-        # CHECK: This isn't tested...
         # CHECK: Should we reboot here? What if we upgrade a kernel...
         print "upgrading: apt packages"
         self.cache.upgrade(True)

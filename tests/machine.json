@@ -1,1 +1,1 @@
-{"packages": ["mcrypt", "zsh", "vim", "screen", "cowsay"], "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}]}
+{"packages": ["zsh", "vim", "screen", "git", "apache2", "ruby"], "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}]}
