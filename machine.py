@@ -48,9 +48,6 @@ class Machine:
         self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
         self.cache = apt.Cache()
 
-    def ensure_system_updated(self):
-        return
-
     def setup_packages(self):
         print "updating: apt cache"
         self.cache.update()
