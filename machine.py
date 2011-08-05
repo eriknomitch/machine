@@ -74,8 +74,7 @@ class Machine:
     def setup(self):
         self.setup_packages()
         self.setup_users()
-        os.system("reboot")
-        return
+        #os.system("reboot")
 
 # ------------------------------------------------
 # GLOBALS ----------------------------------------
