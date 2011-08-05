@@ -36,7 +36,7 @@ class Machine:
         return
 
     def setup_packages(self):
-        print "updating: cache"
+        print "updating: apt cache"
         self.cache.update()
 
         for package in self.packages:

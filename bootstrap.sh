@@ -1,5 +1,11 @@
 #!/bin/sh
 
-# FIX: Check for root
+if [[ $USER != "root" ]] ; then
+    echo "fatal: You need to be root."
+    return 1
+fi
 
-apt-get install python python-apt
+apt-get install python-apt
+
+./machine.py setup
+

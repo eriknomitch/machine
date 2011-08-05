@@ -1,1 +1,1 @@
-sudo ./machine.py install
+sudo ./machine.py setup
