@@ -33,8 +33,33 @@ class Package:
 
     def install(self, cache):
         print "ensuring package: \""+self.name+"\""
-        self.package = cache[self.name]
-        self.package.mark_install()
+        if self.name in cache.keys():
+            self.package = cache[self.name]
+            self.package.mark_install()
+        else:
+            print "warning: package not found: \""+self.name+"\""
+
+# ------------------------------------------------
+# CLASS->GEM -------------------------------------
+# ------------------------------------------------
+class Gem:
+    def __init__(self, name):
+        self.name = name
+
+    def install(self):
+        print "ensuring gem: \""+self.name+"\""
+        return
+
+# ------------------------------------------------
+# CLASS->FILE ------------------------------------
+# ------------------------------------------------
+class File:
+    def __init__(self, json):
+        self.json = json
+        self.name = json["name"]
+
+    def install(self):
+        print "installing file: \""+self.name+"\""
         return
 
 # ------------------------------------------------
@@ -46,6 +71,8 @@ class Machine:
         self.json_config = json.load(self.json_config)
 
         self.packages = map(lambda package_name: Package(package_name), self.json_config["packages"])
+        self.gems     = map(lambda gem_name: Gem(gem_name), self.json_config["gems"])
+
         self.cache = apt.Cache()
 
     def setup_packages(self):
