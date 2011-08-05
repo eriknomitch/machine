@@ -1,4 +1,6 @@
-{"packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby"], 
-    "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
- "websites": [{"domain": "foo.com"}]
+{
+      "packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby"], 
+         "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
+ "configuration": [{"name": "zshrc"}],
+      "websites": [{"domain": "foo.com"}]
 }
