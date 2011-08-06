@@ -11,6 +11,13 @@ import subprocess
 import crypt
 
 # ------------------------------------------------
+# UTILITY->PYTHON --------------------------------
+# ------------------------------------------------
+def remove_file_if_exists(path):
+    if os.path.isfile(path):
+        os.remove(path)
+
+# ------------------------------------------------
 # CLASS->USER ------------------------------------
 # ------------------------------------------------
 class User:
@@ -165,7 +172,7 @@ class Machine:
 
     def setup_websites(self):
         # Delete the "It Works!" page
-        os.remove("/var/www/index.html")
+        remove_file_if_exists("/var/www/index.html")
 
         self.setup_common(self.websites)
 
