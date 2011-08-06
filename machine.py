@@ -22,7 +22,7 @@ class User:
 
     def install(self):
         useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
-        useradd_process = subprocess.Popen(useradd_arguments)
+        useradd_process   = subprocess.Popen(useradd_arguments)
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -66,10 +66,17 @@ class File:
 # CLASS->WEBSITE ---------------------------------
 # ------------------------------------------------
 class Website:
-    def __init__(self, domain):
-        self.domain = domain
+    def __init__(self, json):
+        self.json   = json
+        self.domain = json["domain"]
+        self.name   = self.domain
+
+    def virtual_host(self):
+        return "<VirtualHost *:80>\n    DocumentRoot /var/www/"+self.name+"/public\n    ServerName www."+self.domain+"\n    ServerAlias "+self.domain+"\n    RailsEnv development\n    RailsBaseURI /\n    PassengerPoolIdleTime 0\n    RailsFrameworkSpawnerIdleTime 0\n    RailsFrameworkSpawnerIdleTime 0\n</VirtualHost>"
 
     def install(self):
+        # cd /var/www && rails new && chown...
+        print self.virtual_host()
         return
 
 # ------------------------------------------------
@@ -113,6 +120,9 @@ class Machine:
 
     def setup_users(self):
         self.setup_common(self.users)
+
+    def setup_databases(self):
+        return
     
     def setup_packages(self):
         print "updating:apt:cache"
@@ -132,10 +142,10 @@ class Machine:
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
-        self.setup_users()
-        self.setup_packages()
-        self.setup_files()
-        self.setup_gems()
+        #self.setup_users()
+        #self.setup_packages()
+        #self.setup_files()
+        #self.setup_gems()
         self.setup_websites()
         #os.system("reboot")
 
