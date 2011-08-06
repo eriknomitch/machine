@@ -98,6 +98,16 @@ class GitUser:
 
     def install(self):
         print "installing:git-user: \""+self.name+"\""
+
+        git_arguments = ["sudo", "-i", "-u", self.user, "git", "config", "--global", "user.name", self.name]
+        git_process   = subprocess.call(git_arguments)
+        
+        git_arguments = ["sudo", "-i", "-u", self.user, "git", "config", "--global", "user.email", self.email]
+        git_process   = subprocess.call(git_arguments)
+
+        for repository in self.repositories:
+            repository.install()
+
         return
 
 # ------------------------------------------------
