@@ -177,8 +177,8 @@ class Machine:
         self.cache.open(None)
     
         # CHECK: Should we reboot here? What if we upgrade a kernel...
-        print "upgrading:apt:packages"
-        self.cache.upgrade(True)
+        #print "upgrading:apt:packages"
+        #self.cache.upgrade(True)
 
         for package in self.packages:
             package.install(self.cache)
