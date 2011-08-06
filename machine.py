@@ -22,7 +22,7 @@ class User:
 
     def install(self):
         useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
-        useradd_process   = subprocess.Popen(useradd_arguments)
+        useradd_process   = subprocess.call(useradd_arguments)
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -49,7 +49,7 @@ class Gem:
     def install(self):
         print "installing:gem:\""+self.name+"\""
         gem_arguments = ["gem", "install", self.name]
-        gem_process   = subprocess.Popen(gem_arguments)
+        gem_process   = subprocess.call(gem_arguments)
         return
 
 # ------------------------------------------------
@@ -152,8 +152,8 @@ class Machine:
         rubygems_update = Gem("rubygems-update")
         rubygems_update.install()
    
-        update_rubygems_arguments = ["/var/lib/gem1.8/bin/update_rubygems"]
-        update_rubygems_process   = subprocess.Popen(update_rubygems_arguments)
+        update_rubygems_arguments = ["/var/lib/gem1.8/bin/update_rubygems"] # FIX: This will fail later when 1.8 is old
+        update_rubygems_process   = subprocess.call(update_rubygems_arguments)
 
         # Install our gems
         self.setup_common(self.gems)
