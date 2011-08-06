@@ -5,5 +5,6 @@
    "files": [{"name": "zshrc", "path": "~/.zshrc", "url": "http://serve.eriknomitch.com/configuration/zshrc", "permissions": "0644", "owner": "linode", "group": "linode"}],
 "websites": [{"domain": "foo.com", "name": "foo", "database": "postgresql", "gems": ["dispatcher"]}],
      "git": [{"user": "linode", "name": "Erik Nomitch", "email": "enomitch@gmail.com", "repositories": []}],
-     "ssh": {"authorized-keys": ["ssh-rsa KEY1 foo@host1", "ssh-rsa KEY2 bar@host2"]}
+     "ssh": {"authorized-keys": ["ssh-rsa KEY1 foo@host1", "ssh-rsa KEY2 bar@host2"]},
+ "backups": []
 }

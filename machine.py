@@ -17,6 +17,9 @@ def remove_file_if_exists(path):
     if os.path.isfile(path):
         os.remove(path)
 
+def arguments_as_user(user, arguments):
+    return ["sudo", "-i", "-u", user]+arguments
+
 # ------------------------------------------------
 # CLASS->USER ------------------------------------
 # ------------------------------------------------
@@ -99,10 +102,10 @@ class GitUser:
     def install(self):
         print "installing:git-user: \""+self.name+"\""
 
-        git_arguments = ["sudo", "-i", "-u", self.user, "git", "config", "--global", "user.name", self.name]
+        git_arguments = arguments_as_user(self.user, ["git", "config", "--global", "user.name", self.name])
         git_process   = subprocess.call(git_arguments)
         
-        git_arguments = ["sudo", "-i", "-u", self.user, "git", "config", "--global", "user.email", self.email]
+        git_arguments = arguments_as_user(self.user, ["git", "config", "--global", "user.email", self.email])
         git_process   = subprocess.call(git_arguments)
 
         for repository in self.repositories:
@@ -150,7 +153,7 @@ class Website:
         os.chown("/var/www", 1000, 1000) # FIX: It's probably not great to chown this to 1000:1000... this diregards any other non-privileged users besides the first one
         os.chdir("/var/www/")
 
-        rails_arguments = ["sudo", "-u", "linode", "rails", "new", self.name, "-d", self.database]
+        rails_arguments = arguments_as_user("linode", ["rails", "new", self.name, "-d", self.database]) # FIX: Hardcoded linode...
         rails_process   = subprocess.call(rails_arguments)
 
         os.chdir(cwd_original)
