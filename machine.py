@@ -48,6 +48,8 @@ class Gem:
 
     def install(self):
         print "installing:gem:\""+self.name+"\""
+        gem_arguments = ["gem", "install", self.name]
+        gem_process   = subprocess.Popen(gem_arguments)
         return
 
 # ------------------------------------------------
@@ -97,14 +99,22 @@ class Website:
 
     def install_rails_application(self):
         cwd_original = os.getcwd()
+
+        os.chown("/var/www", 1000, 1000) # CHECK: It's probably not great to chown this to 1000:1000
         os.chdir("/var/www/")
 
-        rails_arguments = ["rails", "new", self.name]
+        # FIX: Try to do this as the 1000 user... Maybe we can put a script in /home/non-privileged-user/something.py and run it after we reboot?
+                
+        rails_arguments = ["sudo", "-u", "linode", "rails", "new", self.name, "-d", self.database]
+        print rails_arguments
+
+        #os.chown("/var/www/"+self.name, 1000, 1000)
 
         os.chdir(cwd_original)
 
     def install(self):
-        self.install_virtual_host()
+        #self.install_virtual_host()
+
         self.install_rails_application()
         # cd /var/www && rails new... && chown...
 
