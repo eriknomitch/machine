@@ -77,6 +77,30 @@ class File:
         return
 
 # ------------------------------------------------
+# CLASS->GIT-REPOSITORY --------------------------
+# ------------------------------------------------
+class GitRepository:
+    def __init__(self, json, git_user):
+        self.json     = json
+        self.git_user = user
+
+# ------------------------------------------------
+# CLASS->GIT-USER --------------------------------
+# ------------------------------------------------
+class GitUser:
+    def __init__(self, json):
+        self.json  = json
+        self.user  = json["user"]
+        self.name  = json["name"]
+        self.email = json["email"]
+
+        self.repositories = map(lambda name: GitRepository(json, self), self.json["repositories"])
+
+    def install(self):
+        print "installing:git-user: \""+self.name+"\""
+        return
+
+# ------------------------------------------------
 # CLASS->WEBSITE ---------------------------------
 # ------------------------------------------------
 class Website:
@@ -135,11 +159,12 @@ class Machine:
         self.json = open(path_json)
         self.json = json.load(self.json)
 
-        self.packages = map(lambda name: Package(name), self.json["packages"])
-        self.gems     = map(lambda name:     Gem(name), self.json["gems"])
-        self.files    = map(lambda json:    File(json), self.json["files"])
-        self.websites = map(lambda json: Website(json), self.json["websites"])
-        self.users    = map(lambda json:    User(json), self.json["users"])
+        self.packages  = map(lambda name: Package(name), self.json["packages"])
+        self.gems      = map(lambda name:     Gem(name), self.json["gems"])
+        self.files     = map(lambda json:    File(json), self.json["files"])
+        self.websites  = map(lambda json: Website(json), self.json["websites"])
+        self.users     = map(lambda json:    User(json), self.json["users"])
+        self.git_users = map(lambda json: GitUser(json), self.json["git"])
 
         self.cache = apt.Cache()
     
@@ -154,7 +179,6 @@ class Machine:
     # SETUPS -------------------------------------
     # --------------------------------------------
     def setup_gems(self):
-
         # Update rubygems
         # NOTE: We can't use "gem update --system" because it's disabled on Debian/Ubuntu so we have to use this workaround.
         rubygems_update = Gem("rubygems-update")
@@ -171,7 +195,7 @@ class Machine:
         self.setup_common(self.files)
 
     def setup_websites(self):
-        # Delete the "It Works!" page
+        # Delete the "It works!" page
         remove_file_if_exists("/var/www/index.html")
 
         self.setup_common(self.websites)
@@ -196,15 +220,20 @@ class Machine:
 
         self.cache.commit()
 
+    def setup_git(self):
+        self.setup_common(self.git_users)
+        return
+
     # --------------------------------------------
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
         self.setup_users()
-        self.setup_packages()
-        self.setup_files()
-        self.setup_gems()
-        self.setup_websites()
+        #self.setup_packages()
+        #self.setup_files()
+        #self.setup_gems()
+        #self.setup_websites()
+        self.setup_git()
         #os.system("reboot")
 
 # ------------------------------------------------
