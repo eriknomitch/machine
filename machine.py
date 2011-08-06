@@ -103,12 +103,8 @@ class Website:
         os.chown("/var/www", 1000, 1000) # CHECK: It's probably not great to chown this to 1000:1000
         os.chdir("/var/www/")
 
-        # FIX: Try to do this as the 1000 user... Maybe we can put a script in /home/non-privileged-user/something.py and run it after we reboot?
-                
         rails_arguments = ["sudo", "-u", "linode", "rails", "new", self.name, "-d", self.database]
-        print rails_arguments
-
-        #os.chown("/var/www/"+self.name, 1000, 1000)
+        rails_process   = subprocess.call(rails_arguments)
 
         os.chdir(cwd_original)
 
@@ -162,6 +158,9 @@ class Machine:
         self.setup_common(self.files)
 
     def setup_websites(self):
+        # Delete the "It Works!" page
+        os.remove("/var/www/index.html")
+
         self.setup_common(self.websites)
 
     def setup_users(self):
