@@ -36,6 +36,16 @@ class User:
         useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
         useradd_process   = subprocess.call(useradd_arguments)
 
+        # Add them to sudoers NOPASSWD
+        # FIX: This should be an option
+        sudoers_file_path = "/etc/sudoers.d/"+self.name
+        sudoers_file = open(sudoers_file_path, "w")
+        sudoers_file.write(self.name+" ALL=NOPASSWD: ALL")
+        sudoers_file.close()
+
+        os.chmod(sudoers_file_path, 0440)
+
+
         # Change their shell
         chsh_arguments = ["chsh", "--shell", "/bin/"+self.shell, self.name]
         chsh_process   = subprocess.call(chsh_arguments)
