@@ -1,0 +1,9 @@
+FIX:
+  * Our JSON should probably be:
+    * user
+      * git
+        * author
+        * email
+        * repositories
+          * repository1...
+

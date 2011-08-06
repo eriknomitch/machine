@@ -94,7 +94,15 @@ class File:
 class GitRepository:
     def __init__(self, json, git_user):
         self.json     = json
-        self.git_user = user
+        self.url      = json["url"]
+        self.path     = json["path"]
+        self.git_user = git_user
+
+    def install(self):
+        print "install:git-repository"
+        # FIX: This won't expand ~/ because the user we're running this under is "root" instead of our target user.
+        git_arguments = arguments_as_user(self.git_user.user, ["git", "clone", "git://"+self.url, self.path])
+        git_process   = subprocess.call(git_arguments)
 
 # ------------------------------------------------
 # CLASS->GIT-USER --------------------------------
@@ -106,7 +114,7 @@ class GitUser:
         self.name  = json["name"]
         self.email = json["email"]
 
-        self.repositories = map(lambda name: GitRepository(json, self), self.json["repositories"])
+        self.repositories = map(lambda json: GitRepository(json, self), self.json["repositories"])
 
     def install(self):
         print "installing:git-user: \""+self.name+"\""
@@ -119,8 +127,6 @@ class GitUser:
 
         for repository in self.repositories:
             repository.install()
-
-        return
 
 # ------------------------------------------------
 # CLASS->WEBSITE ---------------------------------
@@ -244,7 +250,6 @@ class Machine:
 
     def setup_git(self):
         self.setup_common(self.git_users)
-        return
 
     # --------------------------------------------
     # SETUP --------------------------------------
