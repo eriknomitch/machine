@@ -18,11 +18,17 @@ class User:
         self.json           = json
         self.name           = json["name"]
         self.password       = json["password"]
+        self.shell          = json["shell"]
         self.password_crypt = crypt.crypt(self.password, self.name) # CHECK: Is this salt what it's supposed to be (self.name)?
 
     def install(self):
+        # Add the user
         useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
         useradd_process   = subprocess.call(useradd_arguments)
+
+        # Change their shell
+        chsh_arguments = ["chsh", "--shell", "/bin/"+self.shell, self.name]
+        chsh_process   = subprocess.call(chsh_arguments)
 
 # ------------------------------------------------
 # CLASS->PACKAGE ---------------------------------
@@ -100,7 +106,7 @@ class Website:
     def install_rails_application(self):
         cwd_original = os.getcwd()
 
-        os.chown("/var/www", 1000, 1000) # CHECK: It's probably not great to chown this to 1000:1000
+        os.chown("/var/www", 1000, 1000) # FIX: It's probably not great to chown this to 1000:1000... this diregards any other non-privileged users besides the first one
         os.chdir("/var/www/")
 
         rails_arguments = ["sudo", "-u", "linode", "rails", "new", self.name, "-d", self.database]

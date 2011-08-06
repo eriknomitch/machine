@@ -1,9 +1,9 @@
 {
-   "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"]}],
+   "users": [{"name": "linode", "password": "somepassword", "groups": ["sudoers"], "shell": "zsh"}],
 "packages": ["zsh", "vim", "screen", "git-core", "apache2", "ruby", "rubygems", "postgresql", "postgresql-client", "libpq-dev", "libopenssl-ruby1.8", "ruby1.8-dev"], 
     "gems": ["rails", "postgres", "pg", "dispatcher", "jquery-rails"],
    "files": [{"name": "zshrc", "path": "~/.zshrc", "url": "http://serve.eriknomitch.com/configuration/zshrc", "permissions": "0644", "owner": "linode", "group": "linode"}],
-"websites": [{"domain": "foo.com", "name": "foo", "database": "postgresql"}],
+"websites": [{"domain": "foo.com", "name": "foo", "database": "postgresql", "gems": ["dispatcher"]}],
      "git": [{"user": "linode", "name": "Erik Nomitch", "email": "enomitch@gmail.com"}],
      "ssh": {"authorized-keys": ["ssh-rsa KEY1 foo@host1", "ssh-rsa KEY2 bar@host2"]}
 }
