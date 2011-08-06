@@ -95,12 +95,13 @@ class Website:
         virtual_host_file.close()
 
         # Symbolically link it to "sites-enabled".  We'll use the "../" symbolic link instead of "/etc/apache2..." because that's what Ubuntu does.
-        cwd_original = os.getcwd()
 
-        os.chdir("/etc/apache2/sites-enabled/")
-        os.symlink(self.virtual_host_paths()["link"], self.name)
+        if !os.path.isfile("/etc/apache2/sites-enabled/"+self.name):
+            cwd_original = os.getcwd()
+            os.chdir("/etc/apache2/sites-enabled/")
+            os.symlink(self.virtual_host_paths()["link"], self.name)
+            os.chdir(cwd_original)
 
-        os.chdir(cwd_original)
         # Don't worry about restarting apache because we do a reboot later
 
     def install_rails_application(self):
