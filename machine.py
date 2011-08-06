@@ -20,7 +20,7 @@ class User:
         self.password       = json["password"]
         self.password_crypt = crypt.crypt(self.password, self.name) # CHECK: Is this salt what it's supposed to be (self.name)?
 
-    def create(self):
+    def install(self):
         useradd_arguments = ["useradd", "--create-home", "--password", self.password_crypt, self.name]
         useradd_process = subprocess.Popen(useradd_arguments)
 
@@ -47,7 +47,7 @@ class Gem:
         self.name = name
 
     def install(self):
-        print "installing:gem: \""+self.name+"\""
+        print "installing:gem:\""+self.name+"\""
         return
 
 # ------------------------------------------------
@@ -69,28 +69,30 @@ class Website:
     def __init__(self, domain):
         self.domain = domain
 
-    def install(self, cache):
+    def install(self):
         return
 
 # ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
 # ------------------------------------------------
 class Machine:
-    def __init__(self, path_json_config):
-        self.json_config = open(path_json_config)
-        self.json_config = json.load(self.json_config)
+    
+    def __init__(self, path_json):
+        self.json = open(path_json)
+        self.json = json.load(self.json)
 
-        self.packages = map(lambda name: Package(name), self.json_config["packages"])
-        self.gems     = map(lambda name: Gem(name),     self.json_config["gems"])
-        self.files    = map(lambda json: File(json),    self.json_config["files"])
-        self.websites = map(lambda json: Website(json), self.json_config["websites"])
+        self.packages = map(lambda name: Package(name), self.json["packages"])
+        self.gems     = map(lambda name:     Gem(name), self.json["gems"])
+        self.files    = map(lambda json:    File(json), self.json["files"])
+        self.websites = map(lambda json: Website(json), self.json["websites"])
+        self.users    = map(lambda json:    User(json), self.json["users"])
 
         self.cache = apt.Cache()
-
+    
     # --------------------------------------------
     # SETUP->UTILITY -----------------------------
     # --------------------------------------------
-    def setup_standard(self, array):
+    def setup_common(self, array):
         for element in array:
             element.install()
 
@@ -100,18 +102,21 @@ class Machine:
     def setup_gems(self):
         # FIX: Download latest from source and setup.rb
         #ln_arguments = ["ln", "-s", "/usr/bin/gem1.8", "/usr/bin/gem"]
-        self.setup_standard(self.gems)
+        self.setup_common(self.gems)
 
     def setup_files(self):
-        self.setup_standard(self.files)
+        # FIX: How will this handle tarballs?
+        self.setup_common(self.files)
 
     def setup_websites(self):
-        self.setup_standard(self.websites)
+        self.setup_common(self.websites)
+
+    def setup_users(self):
+        self.setup_common(self.users)
     
     def setup_packages(self):
         print "updating:apt:cache"
         self.cache.update()
-
         self.cache.open(None)
     
         # CHECK: Should we reboot here? What if we upgrade a kernel...
@@ -122,12 +127,6 @@ class Machine:
             package.install(self.cache)
 
         self.cache.commit()
-
-    def setup_users(self):
-        self.users = map(lambda user_json: User(user_json), self.json_config["users"])
-
-        for user in self.users:
-            user.create()
 
     # --------------------------------------------
     # SETUP --------------------------------------
