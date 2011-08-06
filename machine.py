@@ -69,10 +69,11 @@ class File:
 # ------------------------------------------------
 class Website:
     def __init__(self, json):
-        self.json   = json
-        self.domain = json["domain"]
         # CHECK: Do we even need self.name? Should everything be based on the domain instead in case we have foo.com and foo.org which are different sites?
-        self.name   = json["name"] # FIX: Extract this with a regex
+        self.json     = json
+        self.domain   = json["domain"]
+        self.database = json["database"]
+        self.name     = json["name"] # FIX: Extract this with a regex
 
     def virtual_host_paths(self):
         return {"available": "/etc/apache2/sites-available/"+self.name,
@@ -113,8 +114,7 @@ class Website:
         os.chdir(cwd_original)
 
     def install(self):
-        #self.install_virtual_host()
-
+        self.install_virtual_host()
         self.install_rails_application()
         # cd /var/www && rails new... && chown...
 
@@ -146,8 +146,16 @@ class Machine:
     # SETUPS -------------------------------------
     # --------------------------------------------
     def setup_gems(self):
-        # FIX: Download latest from source and setup.rb
-        #ln_arguments = ["ln", "-s", "/usr/bin/gem1.8", "/usr/bin/gem"]
+
+        # Update rubygems
+        # NOTE: We can't use "gem update --system" because it's disabled on Debian/Ubuntu so we have to use this workaround.
+        rubygems_update = Gem("rubygems-update")
+        rubygems_update.install()
+   
+        update_rubygems_arguments = ["/var/lib/gem1.8/bin/update_rubygems"]
+        update_rubygems_process   = subprocess.Popen(update_rubygems_arguments)
+
+        # Install our gems
         self.setup_common(self.gems)
 
     def setup_files(self):
@@ -181,10 +189,10 @@ class Machine:
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
-        #self.setup_users()
-        #self.setup_packages()
-        #self.setup_files()
-        #self.setup_gems()
+        self.setup_users()
+        self.setup_packages()
+        self.setup_files()
+        self.setup_gems()
         self.setup_websites()
         #os.system("reboot")
 
