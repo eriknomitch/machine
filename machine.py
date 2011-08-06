@@ -69,15 +69,44 @@ class Website:
     def __init__(self, json):
         self.json   = json
         self.domain = json["domain"]
-        self.name   = self.domain
+        # CHECK: Do we even need self.name? Should everything be based on the domain instead in case we have foo.com and foo.org which are different sites?
+        self.name   = json["name"] # FIX: Extract this with a regex
 
-    def virtual_host(self):
-        return "<VirtualHost *:80>\n    DocumentRoot /var/www/"+self.name+"/public\n    ServerName www."+self.domain+"\n    ServerAlias "+self.domain+"\n    RailsEnv development\n    RailsBaseURI /\n    PassengerPoolIdleTime 0\n    RailsFrameworkSpawnerIdleTime 0\n    RailsFrameworkSpawnerIdleTime 0\n</VirtualHost>"
+    def virtual_host_paths(self):
+        return {"available": "/etc/apache2/sites-available/"+self.name,
+                  "enabled": "/etc/apache2/sites-enabled/"+self.name,
+                     "link": "../sites-available/"+self.name}
+
+    def virtual_host_contents(self):
+        return "<VirtualHost *:80>\n    DocumentRoot /var/www/"+self.name+"/public\n    ServerName www."+self.domain+"\n    ServerAlias "+self.domain+"\n    RailsEnv development\n    RailsBaseURI /\n    PassengerPoolIdleTime 0\n    RailsFrameworkSpawnerIdleTime 0\n</VirtualHost>"
+
+    def install_virtual_host(self):
+        # Write the virtual host file
+        virtual_host_file = open(self.virtual_host_paths()["available"], "w")
+        virtual_host_file.write(self.virtual_host_contents())
+        virtual_host_file.close()
+
+        # Symbolically link it to "sites-enabled".  We'll use the "../" symbolic link instead of "/etc/apache2..." because that's what Ubuntu does.
+        cwd_original = os.getcwd()
+
+        os.chdir("/etc/apache2/sites-enabled/")
+        os.symlink(self.virtual_host_paths()["link"], self.name)
+
+        os.chdir(cwd_original)
+        # Don't worry about restarting apache because we do a reboot later
+
+    def install_rails_application(self):
+        cwd_original = os.getcwd()
+        os.chdir("/var/www/")
+
+        rails_arguments = ["rails", "new", self.name]
+
+        os.chdir(cwd_original)
 
     def install(self):
-        # cd /var/www && rails new && chown...
-        print self.virtual_host()
-        return
+        self.install_virtual_host()
+        self.install_rails_application()
+        # cd /var/www && rails new... && chown...
 
 # ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
