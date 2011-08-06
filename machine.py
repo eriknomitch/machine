@@ -50,7 +50,6 @@ class Gem:
         print "installing:gem:\""+self.name+"\""
         gem_arguments = ["gem", "install", self.name]
         gem_process   = subprocess.call(gem_arguments)
-        return
 
 # ------------------------------------------------
 # CLASS->FILE ------------------------------------
@@ -152,7 +151,7 @@ class Machine:
         rubygems_update = Gem("rubygems-update")
         rubygems_update.install()
    
-        update_rubygems_arguments = ["/var/lib/gem1.8/bin/update_rubygems"] # FIX: This will fail later when 1.8 is old
+        update_rubygems_arguments = ["/var/lib/gems/1.8/bin/update_rubygems"] # FIX: This will fail later when 1.8 is old
         update_rubygems_process   = subprocess.call(update_rubygems_arguments)
 
         # Install our gems
