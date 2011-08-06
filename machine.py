@@ -95,8 +95,7 @@ class Website:
         virtual_host_file.close()
 
         # Symbolically link it to "sites-enabled".  We'll use the "../" symbolic link instead of "/etc/apache2..." because that's what Ubuntu does.
-
-        if !os.path.isfile("/etc/apache2/sites-enabled/"+self.name):
+        if not os.path.isfile("/etc/apache2/sites-enabled/"+self.name):
             cwd_original = os.getcwd()
             os.chdir("/etc/apache2/sites-enabled/")
             os.symlink(self.virtual_host_paths()["link"], self.name)
