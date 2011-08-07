@@ -163,20 +163,14 @@ class Website:
         # Don't worry about restarting apache because we do a reboot later
 
     def install_rails_application(self):
-        cwd_original = os.getcwd()
-
         os.chown("/var/www", 1000, 1000) # FIX: It's probably not great to chown this to 1000:1000... this diregards any other non-privileged users besides the first one
-        os.chdir("/var/www/")
 
-        rails_arguments = arguments_as_user("linode", ["rails", "new", self.name, "-d", self.database]) # FIX: Hardcoded linode...
+        rails_arguments = arguments_as_user("linode", ["rails", "new", "/var/www/"+self.name, "-d", self.database]) # FIX: Hardcoded linode...
         rails_process   = subprocess.call(rails_arguments)
-
-        os.chdir(cwd_original)
 
     def install(self):
         self.install_virtual_host()
         self.install_rails_application()
-        # cd /var/www && rails new... && chown...
 
 # ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
@@ -269,7 +263,7 @@ class Machine:
         self.setup_gems()
         self.setup_websites()
         self.setup_git()
-        os.system("reboot")
+        #os.system("reboot")
 
 # ------------------------------------------------
 # GLOBALS ----------------------------------------
