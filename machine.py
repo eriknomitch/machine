@@ -190,8 +190,8 @@ class Website:
             database.install()
 
     def install(self):
-        #self.install_virtual_host()
-        #self.install_rails_application()
+        self.install_virtual_host()
+        self.install_rails_application()
         self.install_databases()
 
 # ------------------------------------------------
