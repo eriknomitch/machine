@@ -242,9 +242,6 @@ class Machine:
         # Delete the "It works!" page
         remove_file_if_exists("/var/www/index.html")
 
-        #for website in self.websites:
-        #    website.database = Database(website.name)
-
         self.setup_common(self.websites)
 
     def setup_users(self):
