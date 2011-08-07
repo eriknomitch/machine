@@ -245,7 +245,7 @@ class Machine:
     def setup_git(self):
         self.setup_common(self.git_users)
 
-        # TEMPORARY: Make these a hook in cofigs
+        # TEMPORARY: Make these a hook in configs
         remove_file_if_exists("/home/linode/.zshrc")
         ln_arguments = arguments_as_user("linode", ["ln", "-s", "/home/linode/.configs/zshrc", "/home/linode/.zshrc"])
         ln_process   = subprocess.call(ln_arguments)
