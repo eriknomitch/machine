@@ -6,4 +6,7 @@ FIX:
         * email
         * repositories
           * repository1...
+      * ssh
+        * authorized keys
+            * authorizedkey1...
 

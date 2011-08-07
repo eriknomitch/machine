@@ -86,7 +86,17 @@ class File:
 
     def install(self):
         print "installing:file: \""+self.name+"\""
-        return
+
+# ------------------------------------------------
+# CLASS->DATABASE --------------------------------
+# ------------------------------------------------
+class Database:
+    def __init__(self, name):
+        self.json = json
+        self.name = name
+
+    def install(self):
+        print "installing:database: \""+self.name+"\""
 
 # ------------------------------------------------
 # CLASS->GIT-REPOSITORY --------------------------
@@ -159,8 +169,6 @@ class Website:
             os.chdir("/etc/apache2/sites-enabled/")
             os.symlink(self.virtual_host_paths()["link"], self.name)
             os.chdir(cwd_original)
-
-        # Don't worry about restarting apache because we do a reboot later
 
     def install_rails_application(self):
         os.chown("/var/www", 1000, 1000) # FIX: It's probably not great to chown this to 1000:1000... this diregards any other non-privileged users besides the first one
