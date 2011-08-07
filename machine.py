@@ -77,17 +77,6 @@ class Gem:
         gem_process   = subprocess.call(gem_arguments)
 
 # ------------------------------------------------
-# CLASS->FILE ------------------------------------
-# ------------------------------------------------
-class File:
-    def __init__(self, json):
-        self.json = json
-        self.name = json["name"]
-
-    def install(self):
-        print "installing:file: \""+self.name+"\""
-
-# ------------------------------------------------
 # CLASS->DATABASE --------------------------------
 # ------------------------------------------------
 class Database:
@@ -205,7 +194,6 @@ class Machine:
 
         self.packages  = map(lambda name: Package(name), self.json["packages"])
         self.gems      = map(lambda name:     Gem(name), self.json["gems"])
-        self.files     = map(lambda json:    File(json), self.json["files"])
         self.websites  = map(lambda json: Website(json), self.json["websites"])
         self.users     = map(lambda json:    User(json), self.json["users"])
         self.git_users = map(lambda json: GitUser(json), self.json["git"])
@@ -233,10 +221,6 @@ class Machine:
 
         # Install our gems
         self.setup_common(self.gems)
-
-    def setup_files(self):
-        # FIX: How will this handle tarballs?
-        self.setup_common(self.files)
 
     def setup_websites(self):
         # Delete the "It works!" page
@@ -278,7 +262,6 @@ class Machine:
     def setup(self):
         self.setup_users()
         self.setup_packages()
-        self.setup_files()
         self.setup_gems()
         self.setup_websites()
         self.setup_git()
