@@ -251,17 +251,25 @@ class Machine:
     def setup_git(self):
         self.setup_common(self.git_users)
 
+        # TEMPORARY: Make these a hook in cofigs
+        remove_file_if_exists("/home/linode/.zshrc")
+        ln_arguments = arguments_as_user("linode", ["ln", "-s", "/home/linode/.configs/zshrc", "/home/linode/.zshrc"])
+        ln_process   = subprocess.call(ln_arguments)
+
+        ln_arguments = ["ln", "-s", "/home/linode/.configs/zshrc-shared", "/etc/zshrc-shared"]
+        ln_process   = subprocess.call(ln_arguments)
+
     # --------------------------------------------
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
         self.setup_users()
-        #self.setup_packages()
-        #self.setup_files()
-        #self.setup_gems()
-        #self.setup_websites()
+        self.setup_packages()
+        self.setup_files()
+        self.setup_gems()
+        self.setup_websites()
         self.setup_git()
-        #os.system("reboot")
+        os.system("reboot")
 
 # ------------------------------------------------
 # GLOBALS ----------------------------------------
