@@ -279,12 +279,12 @@ class Machine:
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
-        #self.setup_users()
-        #self.setup_packages()
-        #self.setup_files()
-        #self.setup_gems()
+        self.setup_users()
+        self.setup_packages()
+        self.setup_files()
+        self.setup_gems()
         self.setup_websites()
-        #self.setup_git()
+        self.setup_git()
         #os.system("reboot")
 
 # ------------------------------------------------
