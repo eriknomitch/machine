@@ -91,20 +91,20 @@ class File:
 # CLASS->DATABASE --------------------------------
 # ------------------------------------------------
 class Database:
-    def __init__(self, name):
-        self.json     = json
+    def __init__(self, owner, name):
+        self.owner    = owner
+        self.user     = owner
+        self.password = owner
         self.name     = name
-        self.user     = name
-        self.password = name
 
     def install(self):
         print "installing:database: \""+self.name+"\""
-        createuser_arguments = arguments_as_user("postgres", ["createuser", "-DSRP", self.user])
+
+        createuser_arguments = arguments_as_user("postgres", ["createuser", "-DSR", "--no-password", self.user])
         createuser_process   = subprocess.call(createuser_arguments)
 
-        for name in [self.name+"_development"]:
-            createdb_arguments = arguments_as_user("postgres", ["createdb", "-O", self.user, name])
-            createdb_process   = subprocess.call(createdb_arguments)
+        createdb_arguments = arguments_as_user("postgres", ["createdb", "-O", self.user, self.name])
+        createdb_process   = subprocess.call(createdb_arguments)
 
 # ------------------------------------------------
 # CLASS->GIT-REPOSITORY --------------------------
@@ -152,10 +152,10 @@ class GitUser:
 class Website:
     def __init__(self, json):
         # CHECK: Do we even need self.name? Should everything be based on the domain instead in case we have foo.com and foo.org which are different sites?
-        self.json     = json
-        self.domain   = json["domain"]
-        self.database = json["database"]
-        self.name     = json["name"] # FIX: Extract this with a regex
+        self.json          = json
+        self.domain        = json["domain"]
+        self.database_type = json["database_type"]
+        self.name          = json["name"] # FIX: Extract this with a regex
 
     def virtual_host_paths(self):
         return {"available": "/etc/apache2/sites-available/"+self.name,
@@ -181,13 +181,18 @@ class Website:
     def install_rails_application(self):
         os.chown("/var/www", 1000, 1000) # FIX: It's probably not great to chown this to 1000:1000... this diregards any other non-privileged users besides the first one
 
-        rails_arguments = arguments_as_user("linode", ["rails", "new", "/var/www/"+self.name, "-d", self.database]) # FIX: Hardcoded linode...
+        rails_arguments = arguments_as_user("linode", ["rails", "new", "/var/www/"+self.name, "-d", self.database_type]) # FIX: Hardcoded linode...
         rails_process   = subprocess.call(rails_arguments)
 
+    def install_databases(self):
+        for database_name in [self.name+"_development", self.name+"_production", self.name+"_test"]:
+            database = Database(self.name, database_name)
+            database.install()
+
     def install(self):
-        self.install_virtual_host()
-        self.install_rails_application()
-        return
+        #self.install_virtual_host()
+        #self.install_rails_application()
+        self.install_databases()
 
 # ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
@@ -274,7 +279,7 @@ class Machine:
     # SETUP --------------------------------------
     # --------------------------------------------
     def setup(self):
-        self.setup_users()
+        #self.setup_users()
         #self.setup_packages()
         #self.setup_files()
         #self.setup_gems()
