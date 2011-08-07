@@ -92,11 +92,19 @@ class File:
 # ------------------------------------------------
 class Database:
     def __init__(self, name):
-        self.json = json
-        self.name = name
+        self.json     = json
+        self.name     = name
+        self.user     = name
+        self.password = name
 
     def install(self):
         print "installing:database: \""+self.name+"\""
+        createuser_arguments = arguments_as_user("postgres", ["createuser", "-DSRP", self.user])
+        createuser_process   = subprocess.call(createuser_arguments)
+
+        for name in [self.name+"_development"]:
+            createdb_arguments = arguments_as_user("postgres", ["createdb", "-O", self.user, name])
+            createdb_process   = subprocess.call(createdb_arguments)
 
 # ------------------------------------------------
 # CLASS->GIT-REPOSITORY --------------------------
@@ -179,6 +187,7 @@ class Website:
     def install(self):
         self.install_virtual_host()
         self.install_rails_application()
+        return
 
 # ------------------------------------------------
 # CLASS->MACHINE ---------------------------------
@@ -228,14 +237,14 @@ class Machine:
         # Delete the "It works!" page
         remove_file_if_exists("/var/www/index.html")
 
+        #for website in self.websites:
+        #    website.database = Database(website.name)
+
         self.setup_common(self.websites)
 
     def setup_users(self):
         self.setup_common(self.users)
 
-    def setup_databases(self):
-        return
-    
     def setup_packages(self):
         print "updating:apt:cache"
         self.cache.update()
@@ -266,11 +275,11 @@ class Machine:
     # --------------------------------------------
     def setup(self):
         self.setup_users()
-        self.setup_packages()
-        self.setup_files()
-        self.setup_gems()
+        #self.setup_packages()
+        #self.setup_files()
+        #self.setup_gems()
         self.setup_websites()
-        self.setup_git()
+        #self.setup_git()
         #os.system("reboot")
 
 # ------------------------------------------------
